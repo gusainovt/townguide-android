@@ -1,5 +1,7 @@
 package io.project.townguide.android.data.network
 
+import io.project.townguide.android.TownguideApp.Companion.appContext
+import io.project.townguide.android.data.storage.TokenStorage
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -14,6 +16,7 @@ object ApiClient {
     }
 
     private val client = OkHttpClient.Builder()
+        .addInterceptor(AuthInterceptor(TokenStorage(appContext)))
         .addInterceptor(logging)
         .build()
 
