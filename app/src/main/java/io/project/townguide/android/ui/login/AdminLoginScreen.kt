@@ -2,19 +2,15 @@ package io.project.townguide.android.ui.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,15 +18,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import io.project.townguide.android.ui.components.GlassButton
+import io.project.townguide.android.ui.components.GlassChip
+import io.project.townguide.android.ui.components.GlassMessage
+import io.project.townguide.android.ui.components.GlassPanel
+import io.project.townguide.android.ui.components.GlassTextField
+import io.project.townguide.android.ui.components.LiquidGlassBackground
 
 @Composable
 fun AdminLoginScreen(
     onLoginSuccess: () -> Unit
 ) {
-
     val context = LocalContext.current
 
     val viewModel: AdminLoginViewModel = viewModel(
@@ -48,77 +50,69 @@ fun AdminLoginScreen(
             onLoginSuccess()
         }
     }
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
+
+    LiquidGlassBackground {
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .padding(WindowInsets.safeDrawing.asPaddingValues())
+                .padding(20.dp),
+            contentAlignment = Alignment.Center
         ) {
-
-            Text(
-                text = "Admin Login",
-                style = MaterialTheme.typography.headlineMedium
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // LOGIN
-            OutlinedTextField(
-                value = login,
-                onValueChange = viewModel::onLoginChanged,
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Login") },
-                singleLine = true,
-                enabled = !loading
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // PASSWORD
-            OutlinedTextField(
-                value = password,
-                onValueChange = viewModel::onPasswordChanged,
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Password") },
-                singleLine = true,
-                enabled = !loading,
-                visualTransformation = PasswordVisualTransformation()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // ERROR
-            if (error != null) {
-                Text(
-                    text = error!!,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-            }
-
-            // LOGIN BUTTON
-            Button(
-                onClick = { viewModel.onLoginClick() },
+            androidx.compose.foundation.layout.Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp),
-                enabled = !loading
+                    .widthIn(max = 540.dp),
+                verticalArrangement = Arrangement.spacedBy(18.dp)
             ) {
-                if (loading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        strokeWidth = 2.dp,
-                        color = MaterialTheme.colorScheme.onPrimary
+                GlassChip(text = "Townguide")
+
+                GlassPanel(
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(28.dp)
+                ) {
+                    Text(
+                        text = "Панель администратора",
+                        style = MaterialTheme.typography.headlineLarge
                     )
-                } else {
-                    Text("Login")
+
+                    Text(
+                        text = "Вход для управления Telegram-ботом, городами и медиаконтентом.",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f)
+                    )
+
+                    GlassTextField(
+                        value = login,
+                        onValueChange = viewModel::onLoginChanged,
+                        label = "Логин",
+                        enabled = !loading
+                    )
+
+                    GlassTextField(
+                        value = password,
+                        onValueChange = viewModel::onPasswordChanged,
+                        label = "Пароль",
+                        enabled = !loading,
+                        visualTransformation = PasswordVisualTransformation()
+                    )
+
+                    if (error != null) {
+                        GlassMessage(text = error!!)
+                    }
+
+                    GlassButton(
+                        text = if (loading) "Выполняем вход" else "Войти",
+                        onClick = viewModel::onLoginClick,
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = !loading,
+                        loading = loading
+                    )
+
+                    Text(
+                        text = "Используйте учетную запись администратора API.",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.58f)
+                    )
                 }
             }
         }

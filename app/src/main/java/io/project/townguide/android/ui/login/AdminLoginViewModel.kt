@@ -1,24 +1,26 @@
 package io.project.townguide.android.ui.login
 
-import retrofit2.HttpException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.project.townguide.android.data.network.ApiClient
+import io.project.townguide.android.data.network.api.ApiClient
 import io.project.townguide.android.data.network.dto.LoginRequest
 import io.project.townguide.android.data.storage.TokenStorage
+import java.io.IOException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class AdminLoginViewModel(
     private val tokenStorage: TokenStorage
 ) : ViewModel() {
     private val _loginSuccess = MutableStateFlow(false)
-
     val loginSuccess = _loginSuccess.asStateFlow()
+
     private val _login = MutableStateFlow("")
     val login: StateFlow<String> = _login
+
     private val _password = MutableStateFlow("")
     val password: StateFlow<String> = _password
 
@@ -40,6 +42,7 @@ class AdminLoginViewModel(
         viewModelScope.launch {
             _loading.value = true
             _error.value = null
+
             try {
                 val response = ApiClient.authApi.login(
                     LoginRequest(
@@ -47,6 +50,7 @@ class AdminLoginViewModel(
                         password = password.value
                     )
                 )
+
                 tokenStorage.saveToken(response.token)
                 _loginSuccess.value = true
             } catch (e: HttpException) {
@@ -54,10 +58,12 @@ class AdminLoginViewModel(
                     401, 403 -> "Неверный логин или пароль"
                     else -> "Ошибка сервера (${e.code()})"
                 }
+            } catch (e: IOException) {
+                _error.value = "Нет соединения с backend API. Проверьте dev-сервер на 8080 и адрес хоста."
             } catch (e: Exception) {
-                println("Login error: ${e.message}")
+                _error.value = e.message ?: "Не удалось выполнить вход"
             } finally {
-            _loading.value = false
+                _loading.value = false
             }
         }
     }

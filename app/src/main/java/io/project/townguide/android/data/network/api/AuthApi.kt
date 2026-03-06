@@ -1,4 +1,4 @@
-package io.project.townguide.android.data.network
+package io.project.townguide.android.data.network.api
 
 import io.project.townguide.android.data.network.dto.LoginRequest
 import io.project.townguide.android.data.network.dto.LoginResponse

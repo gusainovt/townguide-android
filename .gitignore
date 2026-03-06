@@ -16,3 +16,8 @@ local.properties
 /gradle/
 /.idea/
 /.git/
+/gradlew
+/gradlew.bat
+/.kotlin/
+/.gradle-user-home/
+/.android-user-home/
