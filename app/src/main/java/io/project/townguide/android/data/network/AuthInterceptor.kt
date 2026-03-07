@@ -10,13 +10,17 @@ class AuthInterceptor (
     private val tokenStorage: TokenStorage
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
+        if (chain.request().url.encodedPath.startsWith("/auth/")) {
+            return chain.proceed(chain.request())
+        }
+
         val token = runBlocking {
             tokenStorage.token.first()
         }
 
         val request = if (token != null) {
             chain.request().newBuilder()
-                .addHeader("Authorization", "Bearer $token")
+                .header("Authorization", "Bearer $token")
                 .build()
         } else {
             chain.request()
@@ -24,6 +28,4 @@ class AuthInterceptor (
 
         return chain.proceed(request)
     }
-
-
 }

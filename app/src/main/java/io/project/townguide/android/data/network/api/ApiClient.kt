@@ -3,6 +3,7 @@ package io.project.townguide.android.data.network.api
 import io.project.townguide.android.BuildConfig
 import io.project.townguide.android.TownguideApp.Companion.appContext
 import io.project.townguide.android.data.network.AuthInterceptor
+import io.project.townguide.android.data.network.TokenAuthenticator
 import io.project.townguide.android.data.storage.TokenStorage
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -18,8 +19,27 @@ object ApiClient {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
+    private val tokenStorage = TokenStorage(appContext)
+
+    private val authClient = OkHttpClient.Builder()
+        .addInterceptor(logging)
+        .build()
+
+    private val authRetrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(authClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    val authApi: AuthApi by lazy {
+        authRetrofit.create(AuthApi::class.java)
+    }
+
     private val client = OkHttpClient.Builder()
-        .addInterceptor(AuthInterceptor(TokenStorage(appContext)))
+        .addInterceptor(AuthInterceptor(tokenStorage))
+        .authenticator(TokenAuthenticator(tokenStorage, authApi))
         .addInterceptor(logging)
         .build()
 
@@ -29,9 +49,6 @@ object ApiClient {
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-    }
-    val authApi: AuthApi by lazy {
-        retrofit.create(AuthApi::class.java)
     }
 
     val cityApi: CityApi by lazy {

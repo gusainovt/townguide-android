@@ -51,7 +51,7 @@ class AdminLoginViewModel(
                     )
                 )
 
-                tokenStorage.saveToken(response.token)
+                tokenStorage.saveTokens(response.token, response.refreshToken)
                 _loginSuccess.value = true
             } catch (e: HttpException) {
                 _error.value = when (e.code()) {

@@ -14,6 +14,7 @@ class TokenStorage(private val context: Context) {
 
     companion object {
         private val TOKEN_KEY = stringPreferencesKey("jwt_token")
+        private val REFRESH_TOKEN_KEY = stringPreferencesKey("jwt_refresh_token")
     }
 
     val token: Flow<String?> =
@@ -21,9 +22,25 @@ class TokenStorage(private val context: Context) {
             prefs[TOKEN_KEY]
         }
 
+    val refreshToken: Flow<String?> =
+        context.dataStore.data.map { prefs ->
+            prefs[REFRESH_TOKEN_KEY]
+        }
+
     suspend fun saveToken(token: String) {
         context.dataStore.edit { prefs ->
             prefs[TOKEN_KEY] = token
+        }
+    }
+
+    suspend fun saveTokens(token: String, refreshToken: String?) {
+        context.dataStore.edit { prefs ->
+            prefs[TOKEN_KEY] = token
+            if (refreshToken.isNullOrBlank()) {
+                prefs.remove(REFRESH_TOKEN_KEY)
+            } else {
+                prefs[REFRESH_TOKEN_KEY] = refreshToken
+            }
         }
     }
 

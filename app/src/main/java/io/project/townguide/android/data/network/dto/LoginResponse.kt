@@ -1,5 +1,10 @@
 package io.project.townguide.android.data.network.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class LoginResponse(
-    val token: String
+    @SerializedName(value = "token", alternate = ["accessToken"])
+    val token: String,
+    @SerializedName(value = "refreshToken")
+    val refreshToken: String? = null
 )

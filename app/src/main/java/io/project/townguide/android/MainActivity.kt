@@ -9,9 +9,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import io.project.townguide.android.data.session.SessionEvents
 import io.project.townguide.android.ui.cities.CitiesScreen
 import io.project.townguide.android.ui.citycreate.AddCityScreen
 import io.project.townguide.android.ui.common.FeaturePlaceholderScreen
@@ -119,6 +121,17 @@ class MainActivity : ComponentActivity() {
                             description = "Маршрут создан как безопасная заглушка. Дальше сюда можно добавить загрузку изображения и привязку к городу, месту или истории.",
                             onBack = { navController.navigateUp() }
                         )
+                    }
+                }
+
+                LaunchedEffect(Unit) {
+                    SessionEvents.sessionExpired.collect {
+                        navController.navigate(Routes.LOGIN) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = false
+                            }
+                            launchSingleTop = true
+                        }
                     }
                 }
             }
