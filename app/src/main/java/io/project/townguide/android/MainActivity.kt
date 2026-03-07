@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.project.townguide.android.ui.cities.CitiesScreen
+import io.project.townguide.android.ui.citycreate.AddCityScreen
 import io.project.townguide.android.ui.common.FeaturePlaceholderScreen
 import io.project.townguide.android.ui.dashboard.AdminDashboardScreen
 import io.project.townguide.android.ui.login.AdminLoginScreen
@@ -20,6 +21,7 @@ import io.project.townguide.android.ui.navigation.Routes
 import io.project.townguide.android.ui.splash.SplashScreen
 import io.project.townguide.android.ui.splash.SplashViewModel
 import io.project.townguide.android.ui.splash.SplashViewModelFactory
+import io.project.townguide.android.ui.storycreate.AddStoryScreen
 import io.project.townguide.android.ui.theme.TownguideTheme
 
 class MainActivity : ComponentActivity() {
@@ -87,17 +89,18 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(Routes.ADD_CITY) {
-                        FeaturePlaceholderScreen(
-                            title = "Добавление города",
-                            description = "Экран создания города еще не реализован. Следующим шагом можно собрать форму с названием, английским именем, callback-кодом, описанием и фото.",
-                            onBack = { navController.navigateUp() }
+                        AddCityScreen(
+                            onBack = { navController.navigateUp() },
+                            onCityCreated = {
+                                navController.navigate(Routes.CITIES) {
+                                    popUpTo(Routes.ADD_CITY) { inclusive = true }
+                                }
+                            }
                         )
                     }
 
                     composable(Routes.ADD_STORY) {
-                        FeaturePlaceholderScreen(
-                            title = "Добавление истории",
-                            description = "Пока доступна только навигационная точка. Следующим этапом стоит собрать форму истории с привязкой к выбранному городу.",
+                        AddStoryScreen(
                             onBack = { navController.navigateUp() }
                         )
                     }

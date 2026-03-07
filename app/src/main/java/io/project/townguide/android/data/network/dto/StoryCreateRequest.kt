@@ -1,7 +1,6 @@
 package io.project.townguide.android.data.network.dto
 
-data class StoryDto(
-    val id: Long,
+data class StoryCreateRequest(
     val cityId: Long,
     val body: String
 )
