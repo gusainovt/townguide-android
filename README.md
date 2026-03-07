@@ -46,7 +46,7 @@ Townguide Android Admin решает одну задачу: дать админ�
 
 ### Дашборд
 
-<img alt="01-dashboard.png" src="docs/screenshots/01-dashboard.png"/>
+<img alt="01-dashboard.png" src="docs/screenshots/01-dashboard.png" width="600"/>
 
 ### Города
 
