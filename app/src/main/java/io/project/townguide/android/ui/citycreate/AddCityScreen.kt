@@ -64,7 +64,7 @@ fun AddCityScreen(
                     )
 
                     Text(
-                        text = "Форма отправляет POST /api/v1/city и после успешного создания открывает список городов.",
+                        text = "Форма для создания города и после успешного создания открывает список городов.",
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f)
                     )

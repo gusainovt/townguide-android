@@ -61,7 +61,7 @@ fun AddStoryScreen(
                     )
 
                     Text(
-                        text = "Сначала выберите город, затем отправьте текст истории через POST /api/v1/stories.",
+                        text = "Сначала выберите город, затем отправьте текст истории.",
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f)
                     )
