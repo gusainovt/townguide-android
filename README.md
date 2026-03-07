@@ -46,32 +46,21 @@ Townguide Android Admin решает одну задачу: дать админ�
 
 ### Дашборд
 
-<img alt="01-dashboard.png" src="docs/screenshots/01-dashboard.png" width="600"/>
+<img alt="01-dashboard.png" src="docs/screenshots/01-dashboard.png" width="250"/>
 
 ### Города
 
-Место для скриншота: `docs/screenshots/02-cities.png`
-
-### Новый город
-
-Место для скриншота: `docs/screenshots/03-add-city.png`
+<p>
+  <img src="docs/screenshots/02-cities.png" width="250"/>
+  <img src="docs/screenshots/03-add-city.png" width="250"/>
+</p>
 
 ### История
 
-Место для скриншота: `docs/screenshots/04-add-story.png`
-
-### Место
-
-Место для скриншота: `docs/screenshots/05-add-place.png`
-
-### Фото
-
-Место для скриншота: `docs/screenshots/06-add-photo.png`
-
-### Дополнительно
-
-Место для скриншота экрана входа: `docs/screenshots/07-login.png`  
-Место для скриншота splash-экрана: `docs/screenshots/08-splash.png`
+<p>
+  <img src="docs/screenshots/04-add-story-1.png" width="250"/>
+  <img src="docs/screenshots/05-add-story-2.png" width="250"/>
+</p>
 
 ## Технологический стек
 
