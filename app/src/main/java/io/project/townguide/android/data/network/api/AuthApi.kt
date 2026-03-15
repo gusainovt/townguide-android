@@ -1,20 +1,19 @@
 package io.project.townguide.android.data.network.api
 
-import io.project.townguide.android.data.network.dto.LoginRequest
-import io.project.townguide.android.data.network.dto.LoginResponse
-import io.project.townguide.android.data.network.dto.RefreshRequest
+import io.project.townguide.android.data.network.dto.AdminProfileResponse
+import io.project.townguide.android.data.network.dto.ChangePasswordRequest
+import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface AuthApi {
 
-    @POST("/auth/login")
-    suspend fun login(
-        @Body request: LoginRequest
-    ): LoginResponse
+    @GET("/auth/me")
+    suspend fun me(): Response<AdminProfileResponse>
 
-    @POST("/auth/refresh")
-    suspend fun refresh(
-        @Body request: RefreshRequest
-    ): LoginResponse
+    @POST("/auth/change-password")
+    suspend fun changePassword(
+        @Body request: ChangePasswordRequest
+    ): Response<Unit>
 }

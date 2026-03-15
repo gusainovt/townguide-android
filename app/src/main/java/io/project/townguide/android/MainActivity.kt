@@ -19,6 +19,7 @@ import io.project.townguide.android.ui.cities.CitiesScreen
 import io.project.townguide.android.ui.citycreate.AddCityScreen
 import io.project.townguide.android.ui.common.FeaturePlaceholderScreen
 import io.project.townguide.android.ui.dashboard.AdminDashboardScreen
+import io.project.townguide.android.ui.dashboard.AdminProfileScreen
 import io.project.townguide.android.ui.login.AdminLoginScreen
 import io.project.townguide.android.ui.navigation.Routes
 import io.project.townguide.android.ui.splash.SplashScreen
@@ -84,6 +85,13 @@ class MainActivity : ComponentActivity() {
                             onAddStoryClick = { navController.navigate(Routes.ADD_STORY) },
                             onAddPlaceClick = { navController.navigate(Routes.ADD_PLACE) },
                             onAddPhotoClick = { navController.navigate(Routes.ADD_PHOTO) },
+                            onProfileClick = { navController.navigate(Routes.PROFILE) }
+                        )
+                    }
+
+                    composable(Routes.PROFILE) {
+                        AdminProfileScreen(
+                            onBack = { navController.navigateUp() },
                             onLogoutClick = {
                                 scope.launch {
                                     TokenStorage(context).clear()

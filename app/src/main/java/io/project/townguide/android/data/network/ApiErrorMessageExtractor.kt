@@ -2,7 +2,9 @@ package io.project.townguide.android.data.network
 
 import com.google.gson.JsonParser
 import java.io.IOException
+import okhttp3.ResponseBody
 import retrofit2.HttpException
+import retrofit2.Response
 
 object ApiErrorMessageExtractor {
 
@@ -13,10 +15,7 @@ object ApiErrorMessageExtractor {
         forbiddenMessage: String? = null,
         badRequestMessage: String? = null
     ): String {
-        val responseMessage = exception.response()
-            ?.errorBody()
-            ?.string()
-            ?.let(::parseMessage)
+        val responseMessage = parseMessage(exception.response()?.errorBody())
 
         if (!responseMessage.isNullOrBlank()) {
             return responseMessage
@@ -34,6 +33,18 @@ object ApiErrorMessageExtractor {
         exception: IOException,
         defaultMessage: String = "Не удалось подключиться к backend API."
     ): String = exception.message?.takeIf { it.isNotBlank() } ?: defaultMessage
+
+    fun extract(
+        response: Response<*>,
+        defaultMessage: String
+    ): String {
+        val responseMessage = parseMessage(response.errorBody())
+        return responseMessage ?: "$defaultMessage (${response.code()})"
+    }
+
+    private fun parseMessage(errorBody: ResponseBody?): String? {
+        return errorBody?.string()?.let(::parseMessage)
+    }
 
     private fun parseMessage(rawBody: String): String? {
         return runCatching {

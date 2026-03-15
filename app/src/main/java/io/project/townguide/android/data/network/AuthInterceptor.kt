@@ -6,19 +6,19 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class AuthInterceptor (
+class AuthInterceptor(
     private val tokenStorage: TokenStorage
 ) : Interceptor {
+
     override fun intercept(chain: Interceptor.Chain): Response {
-        if (chain.request().url.encodedPath.startsWith("/auth/")) {
+        val path = chain.request().url.encodedPath
+        if (path == "/auth/login" || path == "/auth/refresh") {
             return chain.proceed(chain.request())
         }
 
-        val token = runBlocking {
-            tokenStorage.token.first()
-        }
+        val token = runBlocking { tokenStorage.token.first() }
 
-        val request = if (token != null) {
+        val request = if (!token.isNullOrBlank()) {
             chain.request().newBuilder()
                 .header("Authorization", "Bearer $token")
                 .build()

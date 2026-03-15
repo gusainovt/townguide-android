@@ -21,25 +21,25 @@ object ApiClient {
 
     private val tokenStorage = TokenStorage(appContext)
 
-    private val authClient = OkHttpClient.Builder()
+    private val publicAuthClient = OkHttpClient.Builder()
         .addInterceptor(logging)
         .build()
 
-    private val authRetrofit: Retrofit by lazy {
+    private val publicAuthRetrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(baseUrl)
-            .client(authClient)
+            .client(publicAuthClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
-    val authApi: AuthApi by lazy {
-        authRetrofit.create(AuthApi::class.java)
+    val publicAuthApi: PublicAuthApi by lazy {
+        publicAuthRetrofit.create(PublicAuthApi::class.java)
     }
 
     private val client = OkHttpClient.Builder()
         .addInterceptor(AuthInterceptor(tokenStorage))
-        .authenticator(TokenAuthenticator(tokenStorage, authApi))
+        .authenticator(TokenAuthenticator(tokenStorage, publicAuthApi))
         .addInterceptor(logging)
         .build()
 
@@ -49,6 +49,10 @@ object ApiClient {
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+
+    val authApi: AuthApi by lazy {
+        retrofit.create(AuthApi::class.java)
     }
 
     val cityApi: CityApi by lazy {

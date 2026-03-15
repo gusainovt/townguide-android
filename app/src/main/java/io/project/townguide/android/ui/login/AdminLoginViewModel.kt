@@ -45,7 +45,7 @@ class AdminLoginViewModel(
             _error.value = null
 
             try {
-                val response = ApiClient.authApi.login(
+                val response = ApiClient.publicAuthApi.login(
                     LoginRequest(
                         username = login.value,
                         password = password.value
