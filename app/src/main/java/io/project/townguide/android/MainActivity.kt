@@ -7,13 +7,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.project.townguide.android.data.session.SessionEvents
+import io.project.townguide.android.data.storage.TokenStorage
 import io.project.townguide.android.ui.cities.CitiesScreen
 import io.project.townguide.android.ui.citycreate.AddCityScreen
 import io.project.townguide.android.ui.common.FeaturePlaceholderScreen
@@ -25,6 +26,7 @@ import io.project.townguide.android.ui.splash.SplashViewModel
 import io.project.townguide.android.ui.splash.SplashViewModelFactory
 import io.project.townguide.android.ui.storycreate.AddStoryScreen
 import io.project.townguide.android.ui.theme.TownguideTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,13 +36,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             TownguideTheme {
                 val navController = rememberNavController()
+                val context = LocalContext.current
+                val scope = rememberCoroutineScope()
 
                 NavHost(
                     navController = navController,
                     startDestination = Routes.SPLASH
                 ) {
                     composable(Routes.SPLASH) {
-                        val context = LocalContext.current
                         val viewModel: SplashViewModel = viewModel(
                             factory = SplashViewModelFactory(context)
                         )
@@ -80,7 +83,13 @@ class MainActivity : ComponentActivity() {
                             onAddCityClick = { navController.navigate(Routes.ADD_CITY) },
                             onAddStoryClick = { navController.navigate(Routes.ADD_STORY) },
                             onAddPlaceClick = { navController.navigate(Routes.ADD_PLACE) },
-                            onAddPhotoClick = { navController.navigate(Routes.ADD_PHOTO) }
+                            onAddPhotoClick = { navController.navigate(Routes.ADD_PHOTO) },
+                            onLogoutClick = {
+                                scope.launch {
+                                    TokenStorage(context).clear()
+                                    SessionEvents.notifySessionExpired()
+                                }
+                            }
                         )
                     }
 
@@ -110,7 +119,7 @@ class MainActivity : ComponentActivity() {
                     composable(Routes.ADD_PLACE) {
                         FeaturePlaceholderScreen(
                             title = "Добавление места",
-                            description = "Раздел под создание точки интереса подготовлен, но форма еще не сделана. Логичный следующий шаг — название, описание, координаты и связь с городом.",
+                            description = "Раздел под создание точки интереса подготовлен, но форма еще не сделана. Логичный следующий шаг: название, описание, координаты и связь с городом.",
                             onBack = { navController.navigateUp() }
                         )
                     }
@@ -127,9 +136,7 @@ class MainActivity : ComponentActivity() {
                 LaunchedEffect(Unit) {
                     SessionEvents.sessionExpired.collect {
                         navController.navigate(Routes.LOGIN) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                inclusive = false
-                            }
+                            popUpTo(0) { inclusive = true }
                             launchSingleTop = true
                         }
                     }

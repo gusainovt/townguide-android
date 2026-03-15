@@ -4,9 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import io.project.townguide.android.ui.components.GlassChip
 import io.project.townguide.android.ui.components.GlassPanel
 import io.project.townguide.android.ui.components.GlassScreen
+import io.project.townguide.android.ui.components.GlassSecondaryButton
 
 private data class DashboardAction(
     val index: String,
@@ -40,7 +40,8 @@ fun AdminDashboardScreen(
     onAddCityClick: () -> Unit,
     onAddStoryClick: () -> Unit,
     onAddPlaceClick: () -> Unit,
-    onAddPhotoClick: () -> Unit
+    onAddPhotoClick: () -> Unit,
+    onLogoutClick: () -> Unit
 ) {
     val actions = listOf(
         DashboardAction(
@@ -77,10 +78,21 @@ fun AdminDashboardScreen(
 
     GlassScreen {
         GlassPanel {
-            Text(
-                text = "Админ-сервис Townguide",
-                style = MaterialTheme.typography.headlineLarge
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Админ-сервис Townguide",
+                    style = MaterialTheme.typography.headlineLarge
+                )
+
+                GlassSecondaryButton(
+                    text = "Выйти",
+                    onClick = onLogoutClick
+                )
+            }
 
             Text(
                 text = "Единая панель для администрирования Telegram-бота и структуры туристического контента.",
@@ -88,7 +100,7 @@ fun AdminDashboardScreen(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f)
             )
 
-            androidx.compose.foundation.layout.Row(
+            Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 GlassChip(text = "${actions.size} разделов")

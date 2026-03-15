@@ -2,6 +2,7 @@ package io.project.townguide.android.ui.citycreate
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.project.townguide.android.data.network.ApiErrorMessageExtractor
 import io.project.townguide.android.data.network.api.ApiClient
 import io.project.townguide.android.data.network.dto.CityCreateRequest
 import java.io.IOException
@@ -72,13 +73,18 @@ class AddCityViewModel : ViewModel() {
                 ApiClient.cityApi.createCity(request)
                 _creationCompleted.value = true
             } catch (e: HttpException) {
-                _error.value = when (e.code()) {
-                    400 -> "Проверьте заполнение полей"
-                    401, 403 -> "Недостаточно прав для создания города"
-                    else -> "Ошибка сервера (${e.code()})"
-                }
+                _error.value = ApiErrorMessageExtractor.extract(
+                    exception = e,
+                    defaultMessage = "Ошибка сервера",
+                    badRequestMessage = "Проверьте заполнение полей",
+                    unauthorizedMessage = "Сессия истекла. Войдите заново.",
+                    forbiddenMessage = "Недостаточно прав для создания города"
+                )
             } catch (e: IOException) {
-                _error.value = "Не удалось подключиться к backend API"
+                _error.value = ApiErrorMessageExtractor.extract(
+                    exception = e,
+                    defaultMessage = "Не удалось подключиться к backend API"
+                )
             } catch (e: Exception) {
                 _error.value = e.message ?: "Не удалось создать город"
             } finally {

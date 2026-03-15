@@ -2,6 +2,7 @@ package io.project.townguide.android.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.project.townguide.android.data.network.ApiErrorMessageExtractor
 import io.project.townguide.android.data.network.api.ApiClient
 import io.project.townguide.android.data.network.dto.LoginRequest
 import io.project.townguide.android.data.storage.TokenStorage
@@ -54,12 +55,17 @@ class AdminLoginViewModel(
                 tokenStorage.saveTokens(response.token, response.refreshToken)
                 _loginSuccess.value = true
             } catch (e: HttpException) {
-                _error.value = when (e.code()) {
-                    401, 403 -> "Неверный логин или пароль"
-                    else -> "Ошибка сервера (${e.code()})"
-                }
+                _error.value = ApiErrorMessageExtractor.extract(
+                    exception = e,
+                    defaultMessage = "Ошибка сервера",
+                    unauthorizedMessage = "Неверный логин или пароль",
+                    forbiddenMessage = "Неверный логин, пароль или недостаточно прав"
+                )
             } catch (e: IOException) {
-                _error.value = "Нет соединения с backend API. Проверьте dev-сервер на 8080 и адрес хоста."
+                _error.value = ApiErrorMessageExtractor.extract(
+                    exception = e,
+                    defaultMessage = "Нет соединения с backend API. Проверьте dev-сервер на 8080 и адрес хоста."
+                )
             } catch (e: Exception) {
                 _error.value = e.message ?: "Не удалось выполнить вход"
             } finally {

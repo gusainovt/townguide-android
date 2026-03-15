@@ -2,6 +2,7 @@ package io.project.townguide.android.ui.storycreate
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.project.townguide.android.data.network.ApiErrorMessageExtractor
 import io.project.townguide.android.data.network.api.ApiClient
 import io.project.townguide.android.data.network.dto.CityResponse
 import io.project.townguide.android.data.network.dto.StoryCreateRequest
@@ -46,6 +47,13 @@ class AddStoryViewModel : ViewModel() {
             try {
                 _cities.value = ApiClient.cityApi.getCities()
                     .sortedBy { it.name.lowercase() }
+            } catch (e: HttpException) {
+                _error.value = ApiErrorMessageExtractor.extract(
+                    exception = e,
+                    defaultMessage = "Не удалось загрузить список городов",
+                    unauthorizedMessage = "Сессия истекла. Войдите заново.",
+                    forbiddenMessage = "Недостаточно прав для просмотра городов"
+                )
             } catch (e: IOException) {
                 _error.value = "Не удалось загрузить список городов"
             } catch (e: Exception) {
@@ -104,11 +112,13 @@ class AddStoryViewModel : ViewModel() {
                 _body.value = ""
                 _successMessage.value = "История добавлена для города ${city.name}"
             } catch (e: HttpException) {
-                _error.value = when (e.code()) {
-                    400 -> "Проверьте текст истории"
-                    401, 403 -> "Недостаточно прав для добавления истории"
-                    else -> "Ошибка сервера (${e.code()})"
-                }
+                _error.value = ApiErrorMessageExtractor.extract(
+                    exception = e,
+                    defaultMessage = "Ошибка сервера",
+                    badRequestMessage = "Проверьте текст истории",
+                    unauthorizedMessage = "Сессия истекла. Войдите заново.",
+                    forbiddenMessage = "Недостаточно прав для добавления истории"
+                )
             } catch (e: IOException) {
                 _error.value = "Не удалось подключиться к backend API"
             } catch (e: Exception) {
