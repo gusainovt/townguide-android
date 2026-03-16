@@ -62,4 +62,8 @@ object ApiClient {
     val storiesApi: StoriesApi by lazy {
         retrofit.create(StoriesApi::class.java)
     }
+
+    val placeApi: PlaceApi by lazy {
+        retrofit.create(PlaceApi::class.java)
+    }
 }

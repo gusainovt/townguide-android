@@ -22,6 +22,7 @@ import io.project.townguide.android.ui.dashboard.AdminDashboardScreen
 import io.project.townguide.android.ui.dashboard.AdminProfileScreen
 import io.project.townguide.android.ui.login.AdminLoginScreen
 import io.project.townguide.android.ui.navigation.Routes
+import io.project.townguide.android.ui.placecreate.AddPlaceScreen
 import io.project.townguide.android.ui.splash.SplashScreen
 import io.project.townguide.android.ui.splash.SplashViewModel
 import io.project.townguide.android.ui.splash.SplashViewModelFactory
@@ -125,9 +126,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(Routes.ADD_PLACE) {
-                        FeaturePlaceholderScreen(
-                            title = "Добавление места",
-                            description = "Раздел под создание точки интереса подготовлен, но форма еще не сделана. Логичный следующий шаг: название, описание, координаты и связь с городом.",
+                        AddPlaceScreen(
                             onBack = { navController.navigateUp() }
                         )
                     }
