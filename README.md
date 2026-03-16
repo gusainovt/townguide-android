@@ -3,6 +3,9 @@
 Android-приложение для администрирования контента Telegram-бота.  
 Клиент предназначен для внутренних админских сценариев: вход по учётной записи администратора, просмотр каталога городов, создание новых городов и добавление историй с привязкой к выбранному городу.
 
+[![Ссылка на бота](https://img.shields.io/badge/Telegram-@Borovsk__bot-blue?logo=telegram)](https://t.me/Borovsk_bot)  
+[![Репозиторий Бота](https://img.shields.io/badge/GitHub-TownGuide_App-black?logo=github)](https://github.com/gusainovt/townguide-bot)
+
 ## Содержание
 
 1. [О проекте](#о-проекте)
